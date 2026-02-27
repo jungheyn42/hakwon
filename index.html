@@ -797,6 +797,9 @@ document.getElementById('cal-next').addEventListener('click',()=>{ calM++; if(ca
 // CARD RENDER
 // ══════════════════════════════════════
 function renderCard(p){
+  p.checks = p.checks || [];
+  p.comments = p.comments || [];
+  p.students = p.students || [];
   const cat=CAT[p.category]||CAT.lesson, isOpen=expandedIds.has(p.id), myPost=p.author===myName;
   const checks=p.checks.map(c=>`<span class="cchip" style="background:${hc(c)}22;color:${hc(c)}">${esc(c)}</span>`).join('');
   const comments=p.comments.map(c=>`<div class="comment-item">${avHtml(c.author,24)}<div class="cbub"><div class="cmeta">${esc(c.author)}<time>${timeAgo(c.createdAt)}</time></div><div class="ctext">${esc(c.text)}</div></div></div>`).join('');
@@ -1026,5 +1029,3 @@ async function initApp(){
 </script>
 </body>
 </html>
-
-
