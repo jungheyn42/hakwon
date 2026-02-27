@@ -488,8 +488,17 @@ const SK = { posts:'ac_posts_v4', classes:'ac_classes_v4', notifs:'ac_notifs_v4'
 const load = k => { try{ return JSON.parse(localStorage.getItem(SK[k])||'null') }catch{ return null } };
 const save = (k,v) => {
   localStorage.setItem(SK[k], JSON.stringify(v)); // 로컬 백업
-  if(k==='posts') fbSet('posts', v);
-  if(k==='classes') fbSet('classes', v);
+  if(k==='posts'){
+    // Firebase는 배열을 객체로 저장하므로 객체로 변환
+    const obj = {};
+    (v||[]).forEach((p,i)=>{ if(p&&p.id) obj[p.id]=p; });
+    fbSet('posts', obj);
+  }
+  if(k==='classes'){
+    const obj = {};
+    (v||[]).forEach((c,i)=>{ if(c&&c.name) obj['c_'+i]=c; });
+    fbSet('classes', obj);
+  }
 };
 
 // ══════════════════════════════════════
@@ -953,24 +962,34 @@ document.getElementById('req-notif')?.addEventListener('click',reqNotif);
 function startSync(){
   // 게시물 실시간 수신
   db.ref('posts').on('value', snap => {
-    const fresh = snap.exists() ? snap.val() : [];
-    const arr = Array.isArray(fresh) ? fresh : Object.values(fresh);
-    arr.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    // 새 게시물 알림
-    arr.forEach(p=>{ if(!seenIds.has(p.id)&&p.author!==myName){ addNotif(p); pushNotif(p); } seenIds.add(p.id); });
-    save('seen',[...seenIds]);
-    posts=arr;
-    localStorage.setItem(SK['posts'], JSON.stringify(posts));
-    refreshCurrentView(); renderHomePage();
+    try {
+      let arr = [];
+      if(snap.exists()){
+        const fresh = snap.val();
+        if(Array.isArray(fresh)) arr = fresh.filter(Boolean);
+        else if(typeof fresh === 'object') arr = Object.values(fresh).filter(Boolean);
+      }
+      arr.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+      arr.forEach(p=>{ if(p&&p.id&&!seenIds.has(p.id)&&p.author!==myName){ addNotif(p); pushNotif(p); } if(p&&p.id) seenIds.add(p.id); });
+      save('seen',[...seenIds]);
+      posts=arr;
+      localStorage.setItem(SK['posts'], JSON.stringify(posts));
+      refreshCurrentView(); renderHomePage();
+    } catch(e){ console.error('posts sync error:', e); }
   });
   // 반 목록 실시간 수신
   db.ref('classes').on('value', snap => {
-    if(snap.exists()){
-      const val=snap.val();
-      classes=Array.isArray(val)?val:Object.values(val);
+    try {
+      let arr = [];
+      if(snap.exists()){
+        const val = snap.val();
+        if(Array.isArray(val)) arr = val.filter(Boolean);
+        else if(typeof val === 'object') arr = Object.values(val).filter(Boolean);
+      }
+      classes = arr;
       localStorage.setItem(SK['classes'], JSON.stringify(classes));
       renderHomePage();
-    }
+    } catch(e){ console.error('classes sync error:', e); }
   });
 }
 
@@ -1007,3 +1026,4 @@ async function initApp(){
 </script>
 </body>
 </html>
+
