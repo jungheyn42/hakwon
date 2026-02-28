@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -254,6 +255,29 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   .dft-btn { border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:.12s; }
   .dft-btn.active { color:#fff; }
   .dft-btn.inactive { background:#F1F5F9; color:var(--muted); }
+
+  /* ── CLASS CALENDAR BANNER ── */
+  #class-cal-banner { background:#fff; border-radius:16px; border:1px solid var(--border); padding:16px; margin-bottom:16px; box-shadow:0 2px 12px rgba(79,70,229,0.06); }
+  .ccb-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .ccb-nav-btn { background:#EEF2FF; border:none; border-radius:8px; padding:4px 12px; font-size:13px; font-weight:700; color:var(--accent); cursor:pointer; }
+  .ccb-month { font-weight:900; font-size:14px; color:var(--text); }
+  .ccb-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .ccb-hdr { text-align:center; font-size:10px; font-weight:800; color:var(--muted); padding:3px 0; }
+  .ccb-day { border-radius:8px; padding:4px 2px; min-height:38px; cursor:pointer; border:1.5px solid transparent; transition:.12s; position:relative; text-align:center; }
+  .ccb-day:hover { border-color:var(--accent); background:#F0F4FF; }
+  .ccb-day.today { border-color:var(--accent); background:#EEF2FF; }
+  .ccb-day.selected { border-color:var(--accent2); background:#EDE9FE; }
+  .ccb-day.other-month { opacity:.3; pointer-events:none; }
+  .ccb-day.has-posts { background:#F0F4FF; }
+  .ccb-daynum { font-size:11px; font-weight:700; color:var(--text); }
+  .ccb-dots { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; margin-top:2px; }
+  .ccb-dot { width:4px; height:4px; border-radius:50%; }
+
+  /* ── CLASS CARD DELETE BTN ── */
+  .class-card-del { position:absolute; top:8px; right:8px; background:none; border:none; font-size:14px; color:#FCA5A5; cursor:pointer; border-radius:6px; padding:2px 5px; opacity:0; transition:.15s; }
+  .class-card:hover .class-card-del { opacity:1; }
+  .class-card:hover .class-card-del:hover { background:#FEE2E2; color:var(--exam); }
+  .class-card { position:relative; }
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -319,6 +343,9 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
       <button id="back-btn">← 목록</button>
       <div id="class-detail-name"></div>
     </div>
+
+    <!-- 달력 배너 -->
+    <div id="class-cal-banner"></div>
 
     <!-- 날짜 탭 바 -->
     <div id="date-tab-bar">
@@ -508,7 +535,7 @@ let posts=[], classes=[], notifs=[], seenIds=new Set(), myName='';
 let currentPage='home', currentClass=null, classCCat='all';
 let feedClassFilter='all', feedCatFilter='all';
 let calY, calM, calSelDate, calClassFilter='all';
-let wCat='lesson', eCat='lesson', editingId=null, pendingDelId=null;
+let wCat='lesson', eCat='lesson', editingId=null, pendingDelId=null, pendingDelClass=null;
 let expandedIds=new Set();
 
 // ══════════════════════════════════════
@@ -542,6 +569,7 @@ function renderHomePage(){
     const col=clsColor(c.name);
     const lc=classPostCount(c.name,'lesson'), hc2=classPostCount(c.name,'homework'), ec=classPostCount(c.name,'exam');
     return`<div class="class-card" data-cls="${esc(c.name)}" style="border-top:4px solid ${col};animation-delay:${i*.06}s">
+      <button class="class-card-del" data-delcls="${esc(c.name)}" title="반 삭제">✕</button>
       <div class="class-card-name">${esc(c.name)}</div>
       <div class="class-card-stats">
         <span class="stat-chip" style="background:#DBEAFE;color:#3B82F6">📖 ${lc}</span>
@@ -553,7 +581,20 @@ function renderHomePage(){
   html+=`<button class="add-class-btn" id="add-class-btn">＋ 반 추가</button>`;
   grid.innerHTML=html;
   grid.querySelectorAll('[data-cls]').forEach(el=>{
-    el.addEventListener('click',()=>openClassDetail(el.dataset.cls));
+    el.addEventListener('click',(e)=>{
+      if(e.target.closest('[data-delcls]')) return; // 삭제 버튼 클릭 시 무시
+      openClassDetail(el.dataset.cls);
+    });
+  });
+  grid.querySelectorAll('[data-delcls]').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      pendingDelClass = btn.dataset.delcls;
+      document.getElementById('ctitle').textContent = `"${pendingDelClass}" 반을 삭제할까요?`;
+      document.getElementById('cbody').textContent = '이 반의 게시물은 삭제되지 않아요.';
+      document.getElementById('cok').textContent = '삭제';
+      document.getElementById('confirm-overlay').classList.add('open');
+    });
   });
   document.getElementById('add-class-btn').addEventListener('click',()=>document.getElementById('addclass-modal').classList.add('open'));
 }
@@ -575,12 +616,71 @@ function getClassDateTabs(){
   return keys;
 }
 
+let classBannerY, classBannerM;
+
+function renderClassCalBanner(){
+  const banner = document.getElementById('class-cal-banner');
+  if(!banner) return;
+  const now = new Date();
+  if(classBannerY===undefined){ classBannerY=now.getFullYear(); classBannerM=now.getMonth(); }
+  const todayKey = dateKey(now.toISOString());
+  const DAYS = ['일','월','화','수','목','금','토'];
+  const first = new Date(classBannerY,classBannerM,1).getDay();
+  const dim = new Date(classBannerY,classBannerM+1,0).getDate();
+  const diPrev = new Date(classBannerY,classBannerM,0).getDate();
+
+  // 이 반의 날짜별 게시물 카테고리
+  const postDates={};
+  posts.filter(p=>p.targetClass===currentClass).forEach(p=>{
+    const k=dateKey(p.createdAt); if(!postDates[k])postDates[k]=[]; postDates[k].push(p.category);
+  });
+
+  let gridHtml = DAYS.map(d=>`<div class="ccb-hdr">${d}</div>`).join('');
+  for(let i=first-1;i>=0;i--) gridHtml+=`<div class="ccb-day other-month"><div class="ccb-daynum">${diPrev-i}</div></div>`;
+  for(let d=1;d<=dim;d++){
+    const key=`${classBannerY}-${pad(classBannerM+1)}-${pad(d)}`;
+    const cats=postDates[key]||[];
+    const dots=cats.slice(0,4).map(c=>`<div class="ccb-dot" style="background:${CAT[c]?.c||'#999'}"></div>`).join('');
+    const cls=[
+      'ccb-day',
+      key===todayKey?'today':'',
+      key===selectedDateTab?'selected':'',
+      cats.length?'has-posts':''
+    ].filter(Boolean).join(' ');
+    gridHtml+=`<div class="${cls}" data-ccbday="${key}">
+      <div class="ccb-daynum">${d}</div>
+      <div class="ccb-dots">${dots}</div>
+    </div>`;
+  }
+  const rem=(first+dim)%7; if(rem>0) for(let i=1;i<=7-rem;i++) gridHtml+=`<div class="ccb-day other-month"><div class="ccb-daynum">${i}</div></div>`;
+
+  banner.innerHTML=`
+    <div class="ccb-nav">
+      <button class="ccb-nav-btn" id="ccb-prev">◀</button>
+      <div class="ccb-month">${classBannerY}년 ${classBannerM+1}월</div>
+      <button class="ccb-nav-btn" id="ccb-next">▶</button>
+    </div>
+    <div class="ccb-grid">${gridHtml}</div>`;
+
+  banner.querySelectorAll('[data-ccbday]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      selectedDateTab=el.dataset.ccbday;
+      renderClassCalBanner();
+      renderDateTabBar();
+      renderDateTabContent();
+    });
+  });
+  document.getElementById('ccb-prev').addEventListener('click',()=>{ classBannerM--; if(classBannerM<0){classBannerM=11;classBannerY--;} renderClassCalBanner(); });
+  document.getElementById('ccb-next').addEventListener('click',()=>{ classBannerM++; if(classBannerM>11){classBannerM=0;classBannerY++;} renderClassCalBanner(); });
+}
+
 function openClassDetail(name){
   currentClass=name;
   document.getElementById('class-detail-name').textContent=name;
-  // 오늘 날짜를 기본 탭으로
   selectedDateTab=dateKey(new Date().toISOString());
+  classBannerY=new Date().getFullYear(); classBannerM=new Date().getMonth();
   classQCat='all';
+  renderClassCalBanner();
   renderDateTabBar();
   renderDateTabContent();
   showPage('class');
@@ -797,9 +897,6 @@ document.getElementById('cal-next').addEventListener('click',()=>{ calM++; if(ca
 // CARD RENDER
 // ══════════════════════════════════════
 function renderCard(p){
-  p.checks = p.checks || [];
-  p.comments = p.comments || [];
-  p.students = p.students || [];
   const cat=CAT[p.category]||CAT.lesson, isOpen=expandedIds.has(p.id), myPost=p.author===myName;
   const checks=p.checks.map(c=>`<span class="cchip" style="background:${hc(c)}22;color:${hc(c)}">${esc(c)}</span>`).join('');
   const comments=p.comments.map(c=>`<div class="comment-item">${avHtml(c.author,24)}<div class="cbub"><div class="cmeta">${esc(c.author)}<time>${timeAgo(c.createdAt)}</time></div><div class="ctext">${esc(c.text)}</div></div></div>`).join('');
@@ -862,7 +959,7 @@ function bindCardEvents(container){
 }
 
 function refreshCurrentView(){
-  if(currentPage==='class'){ renderDateTabBar(); renderDateTabContent(); }
+  if(currentPage==='class'){ renderClassCalBanner(); renderDateTabBar(); renderDateTabContent(); }
   else if(currentPage==='feed') renderFeedPage();
   else if(currentPage==='search') runSearch();
   else if(currentPage==='calendar') renderCalPosts();
@@ -944,7 +1041,21 @@ document.getElementById('ac-submit').addEventListener('click',()=>{
 // ══════════════════════════════════════
 document.getElementById('ccancel').addEventListener('click',()=>{ pendingDelId=null; document.getElementById('confirm-overlay').classList.remove('open'); });
 document.getElementById('cok').addEventListener('click',()=>{
-  if(pendingDelId){ posts=posts.filter(p=>p.id!==pendingDelId); save('posts',posts); expandedIds.delete(pendingDelId); pendingDelId=null; document.getElementById('confirm-overlay').classList.remove('open'); refreshCurrentView(); renderHomePage(); toast('🗑 삭제됐어요'); }
+  if(pendingDelId){
+    posts=posts.filter(p=>p.id!==pendingDelId); save('posts',posts); expandedIds.delete(pendingDelId); pendingDelId=null;
+    document.getElementById('confirm-overlay').classList.remove('open');
+    document.getElementById('ctitle').textContent='정말 삭제할까요?';
+    document.getElementById('cbody').textContent='삭제하면 되돌릴 수 없어요.';
+    document.getElementById('cok').textContent='삭제';
+    refreshCurrentView(); renderHomePage(); toast('🗑 삭제됐어요');
+  } else if(pendingDelClass){
+    classes=classes.filter(c=>c.name!==pendingDelClass); save('classes',classes); pendingDelClass=null;
+    document.getElementById('confirm-overlay').classList.remove('open');
+    document.getElementById('ctitle').textContent='정말 삭제할까요?';
+    document.getElementById('cbody').textContent='삭제하면 되돌릴 수 없어요.';
+    document.getElementById('cok').textContent='삭제';
+    renderHomePage(); toast('🗑 반이 삭제됐어요');
+  }
 });
 
 // ══════════════════════════════════════
