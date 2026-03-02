@@ -59,7 +59,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .page{display:none;max-width:760px;margin:0 auto;padding:18px 14px 100px}
 .page.active{display:block}
 
-/* ── CLASS LIST (홈) ── */
+/* ── CLASS LIST ── */
 #class-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
 .class-card{background:#fff;border-radius:16px;border:1px solid var(--border);padding:18px 16px;cursor:pointer;transition:box-shadow .2s,transform .15s;animation:cIn .25s ease both}
 .class-card:hover{box-shadow:0 6px 24px rgba(79,70,229,0.14);transform:translateY(-2px)}
@@ -76,21 +76,11 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 #back-btn:hover{background:#C7D2FE}
 #class-detail-name{font-weight:900;font-size:22px;color:var(--text)}
 
-/* class detail tabs */
-#class-cat-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-#class-cat-tabs::-webkit-scrollbar{display:none}
-.ccat-btn{border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:transform .12s}
-.ccat-btn:active{transform:scale(.95)}
-
 /* class record form */
 .crf-title{font-weight:900;font-size:15px;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.crf-section{margin-bottom:14px}
-.crf-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block}
 .crf-input,.crf-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s;color:var(--text)}
 .crf-input:focus,.crf-textarea:focus{border-color:var(--accent)}
 .crf-textarea{resize:vertical;min-height:72px;line-height:1.6}
-.crf-row{display:flex;gap:8px}
-.crf-row .crf-section{flex:1}
 .crf-submit{width:100%;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:opacity .15s;margin-top:4px}
 .crf-submit:disabled{opacity:.35;cursor:default}
 
@@ -230,49 +220,49 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
 .empty-box .ei{font-size:44px;margin-bottom:12px}
 .empty-box p{font-size:13px;line-height:1.7}
 
-/* ── DATE TABS ── */
-#date-tab-bar { display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; -webkit-overflow-scrolling:touch; margin-bottom:14px; }
-#date-tab-bar::-webkit-scrollbar { display:none; }
-.date-tab-btn { border:none; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap; font-family:inherit; transition:.15s; flex-shrink:0; }
-.date-tab-btn.active { background:var(--accent); color:#fff; box-shadow:0 3px 12px rgba(79,70,229,0.35); }
-.date-tab-btn.inactive { background:#fff; color:var(--muted); border:1.5px solid var(--border); }
-.date-tab-btn.today-tab { border:2px solid var(--accent); }
+  /* ── DATE TABS ── */
+  #date-tab-bar { display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; -webkit-overflow-scrolling:touch; margin-bottom:14px; }
+  #date-tab-bar::-webkit-scrollbar { display:none; }
+  .date-tab-btn { border:none; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap; font-family:inherit; transition:.15s; flex-shrink:0; }
+  .date-tab-btn.active { background:var(--accent); color:#fff; box-shadow:0 3px 12px rgba(79,70,229,0.35); }
+  .date-tab-btn.inactive { background:#fff; color:var(--muted); border:1.5px solid var(--border); }
+  .date-tab-btn.today-tab { border:2px solid var(--accent); }
 
-/* ── CAT QUICK TABS ── */
-#class-quick-cats { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; }
-#class-quick-cats::-webkit-scrollbar { display:none; }
-.qcat-btn { border:none; border-radius:20px; padding:5px 13px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; transition:.12s; }
+  /* ── CAT QUICK TABS (날짜 안에서) ── */
+  #class-quick-cats { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; }
+  #class-quick-cats::-webkit-scrollbar { display:none; }
+  .qcat-btn { border:none; border-radius:20px; padding:5px 13px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; transition:.12s; }
 
-/* ── DATE FORM CARD ── */
-.date-form-card { background:#fff; border-radius:16px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 2px 12px rgba(79,70,229,0.05); }
-.date-form-card-title { font-weight:900; font-size:14px; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
-.date-form-tabs { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
-.dft-btn { border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:.12s; }
-.dft-btn.active { color:#fff; }
-.dft-btn.inactive { background:#F1F5F9; color:var(--muted); }
+  /* ── DATE FORM CARD ── */
+  .date-form-card { background:#fff; border-radius:16px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 2px 12px rgba(79,70,229,0.05); }
+  .date-form-card-title { font-weight:900; font-size:14px; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+  .date-form-tabs { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+  .dft-btn { border:none; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:.12s; }
+  .dft-btn.active { color:#fff; }
+  .dft-btn.inactive { background:#F1F5F9; color:var(--muted); }
 
-/* ── CLASS CALENDAR BANNER ── */
-#class-cal-banner { background:#fff; border-radius:16px; border:1px solid var(--border); padding:16px; margin-bottom:16px; box-shadow:0 2px 12px rgba(79,70,229,0.06); }
-.ccb-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.ccb-nav-btn { background:#EEF2FF; border:none; border-radius:8px; padding:4px 12px; font-size:13px; font-weight:700; color:var(--accent); cursor:pointer; }
-.ccb-month { font-weight:900; font-size:14px; color:var(--text); }
-.ccb-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
-.ccb-hdr { text-align:center; font-size:10px; font-weight:800; color:var(--muted); padding:3px 0; }
-.ccb-day { border-radius:8px; padding:4px 2px; min-height:38px; cursor:pointer; border:1.5px solid transparent; transition:.12s; position:relative; text-align:center; }
-.ccb-day:hover { border-color:var(--accent); background:#F0F4FF; }
-.ccb-day.today { border-color:var(--accent); background:#EEF2FF; }
-.ccb-day.selected { border-color:var(--accent2); background:#EDE9FE; }
-.ccb-day.other-month { opacity:.3; pointer-events:none; }
-.ccb-day.has-posts { background:#F0F4FF; }
-.ccb-daynum { font-size:11px; font-weight:700; color:var(--text); }
-.ccb-dots { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; margin-top:2px; }
-.ccb-dot { width:4px; height:4px; border-radius:50%; }
+  /* ── CLASS CALENDAR BANNER ── */
+  #class-cal-banner { background:#fff; border-radius:16px; border:1px solid var(--border); padding:16px; margin-bottom:16px; box-shadow:0 2px 12px rgba(79,70,229,0.06); }
+  .ccb-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .ccb-nav-btn { background:#EEF2FF; border:none; border-radius:8px; padding:4px 12px; font-size:13px; font-weight:700; color:var(--accent); cursor:pointer; }
+  .ccb-month { font-weight:900; font-size:14px; color:var(--text); }
+  .ccb-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .ccb-hdr { text-align:center; font-size:10px; font-weight:800; color:var(--muted); padding:3px 0; }
+  .ccb-day { border-radius:8px; padding:4px 2px; min-height:38px; cursor:pointer; border:1.5px solid transparent; transition:.12s; position:relative; text-align:center; }
+  .ccb-day:hover { border-color:var(--accent); background:#F0F4FF; }
+  .ccb-day.today { border-color:var(--accent); background:#EEF2FF; }
+  .ccb-day.selected { border-color:var(--accent2); background:#EDE9FE; }
+  .ccb-day.other-month { opacity:.3; pointer-events:none; }
+  .ccb-day.has-posts { background:#F0F4FF; }
+  .ccb-daynum { font-size:11px; font-weight:700; color:var(--text); }
+  .ccb-dots { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; margin-top:2px; }
+  .ccb-dot { width:4px; height:4px; border-radius:50%; }
 
-/* ── CLASS CARD DELETE BTN ── */
-.class-card-del { position:absolute; top:8px; right:8px; background:none; border:none; font-size:14px; color:#FCA5A5; cursor:pointer; border-radius:6px; padding:2px 5px; opacity:0; transition:.15s; }
-.class-card:hover .class-card-del { opacity:1; }
-.class-card:hover .class-card-del:hover { background:#FEE2E2; color:var(--exam); }
-.class-card { position:relative; }
+  /* ── CLASS CARD DELETE BTN ── */
+  .class-card-del { position:absolute; top:8px; right:8px; background:none; border:none; font-size:14px; color:#FCA5A5; cursor:pointer; border-radius:6px; padding:2px 5px; opacity:0; transition:.15s; }
+  .class-card:hover .class-card-del { opacity:1; }
+  .class-card:hover .class-card-del:hover { background:#FEE2E2; color:var(--exam); }
+  .class-card { position:relative; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -331,8 +321,11 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
       <button id="back-btn">← 목록</button>
       <div id="class-detail-name"></div>
     </div>
+
     <div id="class-cal-banner"></div>
+
     <div id="date-tab-bar"></div>
+
     <div id="date-tab-content"></div>
   </div>
 
@@ -477,6 +470,7 @@ const db = firebase.database();
 const loadName = () => localStorage.getItem('ac_name') || '';
 const saveName = n => localStorage.setItem('ac_name', n);
 
+async function fbGet(path){ const snap=await db.ref(path).get(); return snap.exists()?snap.val():null; }
 async function fbSet(path,val){ await db.ref(path).set(val); }
 
 const SK = { posts:'ac_posts_v4', classes:'ac_classes_v4', notifs:'ac_notifs_v4', seen:'ac_seen_v4' };
@@ -506,13 +500,13 @@ const COLORS=['#4F46E5','#DB2777','#D97706','#059669','#7C3AED','#EA580C','#0284
 const CAT={ lesson:{l:'수업내용',i:'📖',c:'#3B82F6',bg:'#DBEAFE'}, homework:{l:'숙제',i:'✏️',c:'#F59E0B',bg:'#FEF3C7'}, exam:{l:'시험',i:'📝',c:'#EF4444',bg:'#FEE2E2'}, notice:{l:'공지',i:'📢',c:'#10B981',bg:'#D1FAE5'} };
 const CLASS_COLORS=['#4F46E5','#DB2777','#D97706','#059669','#7C3AED','#EA580C','#0284C7','#0891B2'];
 function clsColor(name){ let h=0; for(let c of name)h=(h*31+c.charCodeAt(0))%CLASS_COLORS.length; return CLASS_COLORS[h]; }
-function hc(n){ let h=0; if(!n) return COLORS[0]; for(let c of n)h=(h*31+c.charCodeAt(0))%COLORS.length; return COLORS[h]; }
+function hc(n){ let h=0; for(let c of n)h=(h*31+c.charCodeAt(0))%COLORS.length; return COLORS[h]; }
 function pad(n){return String(n).padStart(2,'0')}
 function dateKey(iso){ const d=new Date(iso); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}` }
 function dateLabelKR(k){ const[y,m,d]=k.split('-'); const now=new Date(),t=dateKey(now.toISOString()),yt=dateKey(new Date(now-86400000).toISOString()); if(k===t)return'오늘'; if(k===yt)return'어제'; return`${Number(m)}월 ${Number(d)}일` }
 function timeAgo(iso){ const d=new Date(iso),diff=Date.now()-d; if(diff<60000)return'방금 전'; if(diff<3600000)return`${Math.floor(diff/60000)}분 전`; if(diff<86400000)return`오늘 ${pad(d.getHours())}:${pad(d.getMinutes())}`; return`${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}` }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function avHtml(name,sz=30){ const c=hc(name); return`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c};display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:${Math.round(sz*.38)}px;color:#fff;flex-shrink:0;box-shadow:0 2px 8px ${c}55">${name?name.charAt(0):'?'}</div>` }
+function avHtml(name,sz=30){ const c=hc(name); return`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c};display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:${Math.round(sz*.38)}px;color:#fff;flex-shrink:0;box-shadow:0 2px 8px ${c}55">${name.charAt(0)}</div>` }
 
 let toastT; function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2000) }
 
@@ -554,8 +548,7 @@ function renderHomePage(){
       document.getElementById('confirm-overlay').classList.add('open');
     });
   });
-  const addBtn = document.getElementById('add-class-btn');
-  if(addBtn) addBtn.addEventListener('click',()=>document.getElementById('addclass-modal').classList.add('open'));
+  document.getElementById('add-class-btn').addEventListener('click',()=>document.getElementById('addclass-modal').classList.add('open'));
 }
 
 let selectedDateTab = null;
@@ -597,7 +590,9 @@ function renderClassCalBanner(){
     const dots=cats.slice(0,4).map(c=>`<div class="ccb-dot" style="background:${CAT[c]?.c||'#999'}"></div>`).join('');
     const cls=[ 'ccb-day', key===todayKey?'today':'', key===selectedDateTab?'selected':'', cats.length?'has-posts':'' ].filter(Boolean).join(' ');
     gridHtml+=`<div class="${cls}" data-ccbday="${key}">
-      <div class="ccb-daynum">${d}</div><div class="ccb-dots">${dots}</div></div>`;
+      <div class="ccb-daynum">${d}</div>
+      <div class="ccb-dots">${dots}</div>
+    </div>`;
   }
   const rem=(first+dim)%7; if(rem>0) for(let i=1;i<=7-rem;i++) gridHtml+=`<div class="ccb-day other-month"><div class="ccb-daynum">${i}</div></div>`;
 
@@ -612,7 +607,9 @@ function renderClassCalBanner(){
   banner.querySelectorAll('[data-ccbday]').forEach(el=>{
     el.addEventListener('click',()=>{
       selectedDateTab=el.dataset.ccbday;
-      renderClassCalBanner(); renderDateTabBar(); renderDateTabContent();
+      renderClassCalBanner();
+      renderDateTabBar();
+      renderDateTabContent();
     });
   });
   document.getElementById('ccb-prev').addEventListener('click',()=>{ classBannerM--; if(classBannerM<0){classBannerM=11;classBannerY--;} renderClassCalBanner(); });
@@ -624,8 +621,10 @@ function openClassDetail(name){
   document.getElementById('class-detail-name').textContent=name;
   selectedDateTab=dateKey(new Date().toISOString());
   classBannerY=new Date().getFullYear(); classBannerM=new Date().getMonth();
-  classQCat='lesson'; // 수정됨: 바로 카테고리 활성화
-  renderClassCalBanner(); renderDateTabBar(); renderDateTabContent();
+  classQCat='lesson';
+  renderClassCalBanner();
+  renderDateTabBar();
+  renderDateTabContent();
   showPage('class');
 }
 
@@ -708,10 +707,21 @@ function renderDftForm(){
     const content=inp.value.trim(); if(!content)return;
     const students=document.getElementById('dft-students').value.split(/[,，\s]+/).map(s=>s.trim()).filter(Boolean);
     const now=new Date().toISOString();
-    const post={id:Date.now().toString()+Math.random().toString(36).slice(2), author:myName,
+    
+    // 파이어베이스 에러 방지를 위해 빈 배열 대신 명시적으로 구조 잡아주기
+    const post={
+      id:Date.now().toString()+Math.random().toString(36).slice(2), 
+      author:myName,
       title:`${currentClass} ${catLabel} (${fullDateLabel(dateKey(now))})`,
-      content, category:cat, targetClass:currentClass, students,
-      createdAt:now, checks:[], comments:[]};
+      content, 
+      category:cat, 
+      targetClass:currentClass, 
+      students: students.length ? students : [],
+      createdAt:now, 
+      checks: [], 
+      comments: []
+    };
+    
     posts.unshift(post); seenIds.add(post.id); save('posts',posts); save('seen',[...seenIds]);
     inp.value=''; document.getElementById('dft-students').value=''; btn.disabled=true;
     renderDateTabBar(); renderDateTabContent();
@@ -863,11 +873,20 @@ function renderCalPosts(){
 document.getElementById('cal-prev').addEventListener('click',()=>{ calM--; if(calM<0){calM=11;calY--;} renderCalendar(); });
 document.getElementById('cal-next').addEventListener('click',()=>{ calM++; if(calM>11){calM=0;calY++;} renderCalendar(); });
 
+// 🔥 여기서 파이어베이스 배열 에러를 완벽하게 방어합니다!
 function renderCard(p){
-  const cat=CAT[p.category]||CAT.lesson, isOpen=expandedIds.has(p.id), myPost=p.author===myName;
-  const checks=p.checks.map(c=>`<span class="cchip" style="background:${hc(c)}22;color:${hc(c)}">${esc(c)}</span>`).join('');
-  const comments=p.comments.map(c=>`<div class="comment-item">${avHtml(c.author,24)}<div class="cbub"><div class="cmeta">${esc(c.author)}<time>${timeAgo(c.createdAt)}</time></div><div class="ctext">${esc(c.text)}</div></div></div>`).join('');
-  const studs=p.students?.length?`<div class="stud-box"><div class="stud-lbl">👤 해당 학생</div><div class="stud-list">${p.students.map(s=>`<span class="stag">${esc(s)}</span>`).join('')}</div></div>`:'';
+  const cat = CAT[p.category] || CAT.lesson;
+  const isOpen = expandedIds.has(p.id);
+  const myPost = p.author === myName;
+  
+  // 만약 파이어베이스가 빈 배열을 지워버렸더라도 여기서 []로 다시 살려냅니다.
+  const safeChecks = p.checks || [];
+  const safeComments = p.comments || [];
+  
+  const checks = safeChecks.map(c=>`<span class="cchip" style="background:${hc(c)}22;color:${hc(c)}">${esc(c)}</span>`).join('');
+  const comments = safeComments.map(c=>`<div class="comment-item">${avHtml(c.author,24)}<div class="cbub"><div class="cmeta">${esc(c.author)}<time>${timeAgo(c.createdAt)}</time></div><div class="ctext">${esc(c.text)}</div></div></div>`).join('');
+  const studs = (p.students && p.students.length > 0) ? `<div class="stud-box"><div class="stud-lbl">👤 해당 학생</div><div class="stud-list">${p.students.map(s=>`<span class="stag">${esc(s)}</span>`).join('')}</div></div>` : '';
+  
   return`<div class="card" data-id="${p.id}">
     <div class="card-hdr" data-toggle="${p.id}">
       <div class="card-meta">
@@ -878,7 +897,7 @@ function renderCard(p){
             <span class="cat-badge" style="background:${cat.bg};color:${cat.c}">${cat.i} ${cat.l}</span>
             ${p.targetClass?`<span class="cls-badge">🏫 ${esc(p.targetClass)}</span>`:''}
           </div>
-          <div class="ctime">${timeAgo(p.createdAt)} &nbsp;·&nbsp; 📅 ${dateLabelKR(dateKey(p.createdAt))} (${new Date(p.createdAt).getMonth()+1}월 ${new Date(p.createdAt).getDate()}일)${p.editedAt?'<span class="edited-badge"> (수정됨)</span>':''}</div>
+          <div class="ctime">${timeAgo(p.createdAt)} &nbsp;·&nbsp; 📅 ${dateLabelKR(dateKey(p.createdAt))}</div>
         </div>
         <span class="chevron" style="transform:${isOpen?'rotate(180deg)':'rotate(0)'}">⌄</span>
       </div>
@@ -889,8 +908,8 @@ function renderCard(p){
       <div class="card-content">${esc(p.content)}</div>
       ${studs}
       <div class="checks-row">
-        <button class="btn-check ${p.checks.includes(myName)?'checked':'unchecked'}" data-check="${p.id}">${p.checks.includes(myName)?'✅ 확인완료':'☑️ 확인하기'}</button>
-        ${p.checks.length?`<span style="font-size:11px;color:var(--muted)">확인:</span>${checks}`:''}
+        <button class="btn-check ${safeChecks.includes(myName)?'checked':'unchecked'}" data-check="${p.id}">${safeChecks.includes(myName)?'✅ 확인완료':'☑️ 확인하기'}</button>
+        ${safeChecks.length?`<span style="font-size:11px;color:var(--muted)">확인:</span>${checks}`:''}
         ${myPost?`<button class="btn-edit" data-edit="${p.id}">✏️ 수정</button><button class="btn-delete" data-del="${p.id}">🗑 삭제</button>`:''}
       </div>
       <div><div id="cmts-${p.id}">${comments}</div>
@@ -910,6 +929,7 @@ function bindCardEvents(container){
   }));
   container.querySelectorAll('[data-check]').forEach(btn=>btn.addEventListener('click',e=>{
     e.stopPropagation(); const p=posts.find(x=>x.id===btn.dataset.check); if(!p)return;
+    if(!p.checks) p.checks = []; // 빈칸 방어
     p.checks.includes(myName)?p.checks=p.checks.filter(c=>c!==myName):p.checks.push(myName);
     save('posts',posts); refreshCurrentView();
   }));
@@ -919,7 +939,12 @@ function bindCardEvents(container){
     const inp=document.getElementById(`ci-${p.id}`), btn=document.getElementById(`cs-${p.id}`);
     if(!inp||!btn)return;
     inp.addEventListener('input',()=>btn.disabled=!inp.value.trim());
-    const send=()=>{ const t=inp.value.trim(); if(!t)return; p.comments.push({id:Date.now().toString(),author:myName,text:t,createdAt:new Date().toISOString()}); save('posts',posts); inp.value=''; btn.disabled=true; refreshCurrentView(); };
+    const send=()=>{ 
+      const t=inp.value.trim(); if(!t)return; 
+      if(!p.comments) p.comments = []; // 빈칸 방어
+      p.comments.push({id:Date.now().toString(),author:myName,text:t,createdAt:new Date().toISOString()}); 
+      save('posts',posts); inp.value=''; btn.disabled=true; refreshCurrentView(); 
+    };
     btn.addEventListener('click',send);
     inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} });
   });
@@ -991,19 +1016,21 @@ document.getElementById('ac-submit').addEventListener('click',()=>{
   renderHomePage(); toast(`✅ ${name} 추가됐어요!`);
 });
 
-document.getElementById('ccancel').addEventListener('click',()=>{ 
-  pendingDelId=null; 
-  pendingDelClass=null; // 수정됨: 취소 버그 해결
-  document.getElementById('confirm-overlay').classList.remove('open'); 
-});
+document.getElementById('ccancel').addEventListener('click',()=>{ pendingDelId=null; document.getElementById('confirm-overlay').classList.remove('open'); });
 document.getElementById('cok').addEventListener('click',()=>{
   if(pendingDelId){
     posts=posts.filter(p=>p.id!==pendingDelId); save('posts',posts); expandedIds.delete(pendingDelId); pendingDelId=null;
     document.getElementById('confirm-overlay').classList.remove('open');
+    document.getElementById('ctitle').textContent='정말 삭제할까요?';
+    document.getElementById('cbody').textContent='삭제하면 되돌릴 수 없어요.';
+    document.getElementById('cok').textContent='삭제';
     refreshCurrentView(); renderHomePage(); toast('🗑 삭제됐어요');
   } else if(pendingDelClass){
     classes=classes.filter(c=>c.name!==pendingDelClass); save('classes',classes); pendingDelClass=null;
     document.getElementById('confirm-overlay').classList.remove('open');
+    document.getElementById('ctitle').textContent='정말 삭제할까요?';
+    document.getElementById('cbody').textContent='삭제하면 되돌릴 수 없어요.';
+    document.getElementById('cok').textContent='삭제';
     renderHomePage(); toast('🗑 반이 삭제됐어요');
   }
 });
@@ -1017,7 +1044,7 @@ document.getElementById('npclear').addEventListener('click',e=>{ e.stopPropagati
 document.addEventListener('click',e=>{ const p=document.getElementById('npanel'); if(!p.contains(e.target)&&e.target.id!=='nbell')p.classList.remove('open'); });
 document.getElementById('req-notif')?.addEventListener('click',reqNotif);
 
-let isFirstLoad = true; // 수정됨: 알림 폭탄 방지
+let isFirstLoad = true;
 function startSync(){
   db.ref('posts').on('value', snap => {
     try {
@@ -1030,9 +1057,7 @@ function startSync(){
       arr.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
       arr.forEach(p=>{ 
         if(p&&p.id&&!seenIds.has(p.id)&&p.author!==myName){ 
-          if(!isFirstLoad){ // 수정됨: 처음 열 때는 알림 무시
-            addNotif(p); pushNotif(p); 
-          }
+          if(!isFirstLoad){ addNotif(p); pushNotif(p); } 
         } 
         if(p&&p.id) seenIds.add(p.id); 
       });
