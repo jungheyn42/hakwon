@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -325,16 +324,16 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
       </div>
       <!-- NAV TABS -->
       <div id="nav-tabs">
-        <button class="nav-tab active" data-page="home">🏠 반 목록</button>
+        <button class="nav-tab active" data-page="calendar">📅 다이어리</button>
+        <button class="nav-tab" data-page="home">🏠 반 목록</button>
         <button class="nav-tab" data-page="feed">📋 전체 피드</button>
         <button class="nav-tab" data-page="search">🔍 검색</button>
-        <button class="nav-tab" data-page="calendar">📅 달력</button>
       </div>
     </div>
   </div>
 
   <!-- ══ PAGE: HOME (반 목록) ══ -->
-  <div class="page active" id="page-home">
+  <div class="page" id="page-home">
     <div id="class-grid"></div>
   </div>
 
@@ -384,7 +383,7 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
   </div>
 
   <!-- ══ PAGE: CALENDAR ══ -->
-  <div class="page" id="page-calendar">
+  <div class="page active" id="page-calendar">
     <div class="cal-nav">
       <button class="cal-nav-btn" id="cal-prev">◀</button>
       <div class="cal-month-title" id="cal-title"></div>
@@ -392,7 +391,8 @@ body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--
     </div>
     <div class="cal-class-filter" id="cal-class-filter"></div>
     <div class="cal-grid" id="cal-grid"></div>
-    <div class="cal-sel-label" id="cal-sel-label">날짜를 선택하면 게시물을 볼 수 있어요</div>
+    <div class="cal-sel-label" id="cal-sel-label">날짜를 선택하면 반별 수업을 볼 수 있어요</div>
+    <div id="cal-class-picker" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
     <div id="cal-posts"></div>
   </div>
 
@@ -878,16 +878,59 @@ function renderCalendar(){
   }
   const rem=(first+dim)%7; if(rem>0) for(let i=1;i<=7-rem;i++) html+=`<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
   document.getElementById('cal-grid').innerHTML=html;
-  document.querySelectorAll('[data-calday]').forEach(el=>el.addEventListener('click',()=>{ calSelDate=el.dataset.calday; renderCalendar(); renderCalPosts(); }));
+  document.querySelectorAll('[data-calday]').forEach(el=>el.addEventListener('click',()=>{ calSelDate=el.dataset.calday; calPickedClass=null; renderCalendar(); renderCalPosts(); }));
   renderCalPosts();
 }
+let calPickedClass=null;
 function renderCalPosts(){
-  const lbl=document.getElementById('cal-sel-label'), area=document.getElementById('cal-posts');
-  if(!calSelDate){lbl.textContent='날짜를 선택하면 게시물을 볼 수 있어요';area.innerHTML='';return;}
-  const[,m,d]=calSelDate.split('-'); lbl.textContent=`${Number(m)}월 ${Number(d)}일 게시물`;
-  let dp=posts.filter(p=>dateKey(p.createdAt)===calSelDate&&(calClassFilter==='all'||p.targetClass===calClassFilter));
+  const lbl=document.getElementById('cal-sel-label');
+  const picker=document.getElementById('cal-class-picker');
+  const area=document.getElementById('cal-posts');
+  if(!calSelDate){
+    lbl.textContent='날짜를 선택하면 반별 수업을 볼 수 있어요';
+    if(picker) picker.style.display='none';
+    area.innerHTML=''; return;
+  }
+  const[,m,d]=calSelDate.split('-');
+  const wd=['일','월','화','수','목','금','토'][new Date(calSelDate+'T00:00:00').getDay()];
+  lbl.textContent=`📅 ${Number(m)}월 ${Number(d)}일 (${wd})`;
+
+  const clsNames=getClassNames();
+  if(picker){
+    picker.style.display='flex';
+    const activeCls=new Set(posts.filter(p=>dateKey(p.createdAt)===calSelDate).map(p=>p.targetClass));
+    picker.innerHTML=clsNames.map(n=>{
+      const isActive=n===calPickedClass;
+      const col=clsColor(n);
+      const hasPosts=activeCls.has(n);
+      return `<button class="cal-class-btn${isActive?' active':''}" data-calpick="${esc(n)}"
+        style="background:${isActive?col:'#fff'};color:${isActive?'#fff':col};border-color:${hasPosts?col:'var(--border)'};font-weight:800">
+        ${esc(n)}${hasPosts?' ●':''}
+      </button>`;
+    }).join('')+
+    `<button id="cal-add-record" style="background:#EEF2FF;color:var(--accent);border:1.5px solid var(--accent);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap">✍️ 수업 기록</button>`;
+
+    picker.querySelectorAll('[data-calpick]').forEach(b=>b.addEventListener('click',()=>{ calPickedClass=b.dataset.calpick; renderCalPosts(); }));
+    const addBtn=document.getElementById('cal-add-record');
+    if(addBtn) addBtn.addEventListener('click',()=>{
+      const target=calPickedClass||(clsNames[0]||null);
+      if(!target){ toast('먼저 반을 선택하거나 반 목록에서 반을 추가해주세요!'); return; }
+      if(!calPickedClass) calPickedClass=target;
+      openClassDetail(target);
+      selectedDateTab=calSelDate;
+      classBannerY=parseInt(calSelDate.split('-')[0]);
+      classBannerM=parseInt(calSelDate.split('-')[1])-1;
+      renderClassCalBanner(); renderDateTabBar(); renderDateTabContent();
+    });
+  }
+
+  let dp=posts.filter(p=>dateKey(p.createdAt)===calSelDate);
+  if(calPickedClass) dp=dp.filter(p=>p.targetClass===calPickedClass);
   dp.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  if(dp.length===0){area.innerHTML=`<div class="empty-box"><div class="ei">📭</div><p>이 날은 게시물이 없어요</p></div>`;return;}
+  if(dp.length===0){
+    area.innerHTML=`<div class="empty-box"><div class="ei">📭</div><p>${calPickedClass?calPickedClass+' ':''}이 날 기록이 없어요<br><small style="color:var(--muted)">✍️ 수업 기록 버튼을 눌러보세요</small></p></div>`;
+    return;
+  }
   area.innerHTML=dp.map(p=>renderCard(p)).join('');
   bindCardEvents(area);
 }
@@ -1129,7 +1172,7 @@ async function initApp(){
   posts.forEach(p=>seenIds.add(p.id));
   const av=document.getElementById('uav'), nd=document.getElementById('uname');
   av.textContent=myName.charAt(0); av.style.background=hc(myName); nd.textContent=myName;
-  renderNotifPanel(); showPage('home');
+  renderNotifPanel(); showPage('calendar');
   // Firebase 실시간 동기화 시작
   startSync();
 }
